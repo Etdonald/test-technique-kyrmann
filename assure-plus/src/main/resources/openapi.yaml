@@ -1,0 +1,164 @@
+openapi: 3.0.3
+info:
+  title: API Assure Plus
+  description: >
+    Documentation Swagger pour la gestion des utilisateurs, rôles et permissions.
+    Vous pouvez créer un utilisateur, un rôle et une permission, et tester les appels directement ici.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+    description: Serveur local de développement
+
+paths:
+  /api/utilisateurs/creer:
+    post:
+      summary: Créer un utilisateur
+      description: Crée un utilisateur avec un rôle et des permissions.
+      operationId: creerUtilisateur
+      tags:
+        - Utilisateurs
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UtilisateurDTO"
+            examples:
+              ExempleUtilisateur:
+                summary: Exemple de création d’utilisateur
+                value:
+                  identifiant: "donald.kone"
+                  email: "donald.kone@gmail.com"
+                  telephone: "0767957834"
+                  password: "motdepasse123"
+                  roleId: "bb9e5b20-de29-4548-a46b-14e52141d8c9"
+                  permissionIds:
+                    - "1e788618-b83e-4ae6-8d8f-70bde41e23dc"
+                    - "a6125c2a-b7a1-465f-91f3-26dcff4c8f62"
+      responses:
+        "200":
+          description: Utilisateur créé avec succès
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UtilisateurDTO"
+        "400":
+          description: Erreur lors de la création
+
+  /api/roles/creer:
+    post:
+      summary: Créer un rôle
+      description: Crée un rôle avec un nom et une description.
+      operationId: creerRole
+      tags:
+        - Rôles
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RoleDTO"
+            examples:
+              ExempleRole:
+                summary: Exemple de création de rôle
+                value:
+                  nom: "ADMIN"
+                  description: "Rôle administrateur avec tous les privilèges"
+      responses:
+        "200":
+          description: Rôle créé avec succès
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RoleDTO"
+        "400":
+          description: Erreur lors de la création
+
+  /api/permissions/creer:
+    post:
+      summary: Créer une permission
+      description: Crée une permission avec un code et une description.
+      operationId: creerPermission
+      tags:
+        - Permissions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PermissionDTO"
+            examples:
+              ExemplePermission:
+                summary: Exemple de création de permission
+                value:
+                  code: "CREATE_USER"
+                  description: "Autorise la création d’un utilisateur"
+                  parentId: null
+      responses:
+        "200":
+          description: Permission créée avec succès
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PermissionDTO"
+        "400":
+          description: Erreur lors de la création
+
+components:
+  schemas:
+    UtilisateurDTO:
+      type: object
+      properties:
+        utilisateurId:
+          type: string
+          format: uuid
+        identifiant:
+          type: string
+        email:
+          type: string
+        telephone:
+          type: string
+        password:
+          type: string
+        roleId:
+          type: string
+          format: uuid
+        permissionIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+      required:
+        - identifiant
+        - email
+        - telephone
+        - roleId
+
+    RoleDTO:
+      type: object
+      properties:
+        roleId:
+          type: string
+          format: uuid
+        nom:
+          type: string
+        description:
+          type: string
+      required:
+        - nom
+
+    PermissionDTO:
+      type: object
+      properties:
+        permissionId:
+          type: string
+          format: uuid
+        code:
+          type: string
+        description:
+          type: string
+        parentId:
+          type: string
+          format: uuid
+      required:
+        - code
